@@ -1,0 +1,60 @@
+baseURL: http://example.org/
+languageCode: en-us
+defaultContentLanguage: en
+author: Hugo Authors
+title: Vitae
+theme: hugo-vitae
+paginate: 5
+enableRobotsTXT: yes
+copyright: © Copyright notice | [Vitae](https://github.com/dataCobra/hugo-vitae) theme
+  for [Hugo](https://gohugo.io)
+pygmentsstyle: colorful
+pygmentscodefences: yes
+pygmentscodefencesguesssyntax: yes
+googleAnalytics: ''
+taxonomies:
+  category: categories
+  series: series
+  tag: tags
+params:
+  avatar: /img/vitae.jpg
+  comments:
+    commento: {}
+    disqus: {}
+    enabled: no
+  description: Vitae is a blog theme for Hugo that focuses on your content.
+  homepage: no
+  keywords:
+    - hugo
+    - vitae
+    - theme
+    - static
+  mainSections: post
+  math: yes
+  pagetitle: All about static site generation
+  social:
+    - icon: fab fa-github
+      name: Github
+      url: https://github.com/dataCobra/hugo-vitae
+    - icon: fas fa-rss
+      name: RSS
+      url: /index.xml
+  subtitle: '[Vitae](https://github.com/dataCobra/hugo-vitae) is a blog theme for
+    Hugo that focuses on your content.'
+menu:
+  main:
+    - name: Home
+      url: /
+      weight: 1
+    - name: All Posts
+      url: /post
+      weight: 2
+    - name: About
+      url: /about
+      weight: 3
+    - name: Tags
+      url: /tags
+      weight: 4
+    - name: Categories
+      url: /categories
+      weight: 5
