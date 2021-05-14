@@ -39,8 +39,8 @@ params:
     - icon: fas fa-rss
       name: RSS
       url: /index.xml
-  subtitle: '[Vitae](https://github.com/dataCobra/hugo-vitae) is a blog theme for
-    Hugo that focuses on your content.'
+  subtitle: '[Seth White](https://david-seth-white.netlify.app/) is a Graduate student in the Data Science and Analytics
+  Program at Grand Valley State University in Grand Rapids MI.'
 menu:
   main:
     - name: Home
