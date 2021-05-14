@@ -2,7 +2,7 @@ baseURL: http://example.org/
 languageCode: en-us
 defaultContentLanguage: en
 author: Hugo Authors
-title: Vitae
+title: David Seth White
 theme: hugo-vitae
 paginate: 5
 enableRobotsTXT: yes
@@ -35,7 +35,7 @@ params:
   social:
     - icon: fab fa-github
       name: Github
-      url: https://github.com/dataCobra/hugo-vitae
+      url: https://github.com/dswhite5
     - icon: fas fa-rss
       name: RSS
       url: /index.xml
