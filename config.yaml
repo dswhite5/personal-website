@@ -17,7 +17,7 @@ taxonomies:
   series: series
   tag: tags
 params:
-  avatar: /img/vitae.jpg
+  avatar: /img/profile.JPG
   comments:
     commento: {}
     disqus: {}
