@@ -31,7 +31,7 @@ params:
     - static
   mainSections: post
   math: yes
-  pagetitle: All about static site generation
+  pagetitle: Data Science Grad Student
   social:
     - icon: fab fa-github
       name: Github
