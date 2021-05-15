@@ -1,6 +1,6 @@
 ---
 author: Seth White
-date: "2021-05-021"
+date: "2021-05-21"
 description: md place holder
 tags:
 - none
