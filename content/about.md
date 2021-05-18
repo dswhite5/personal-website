@@ -3,7 +3,7 @@ aliases:
 - about-us
 - about-hugo
 - contact
-author: Hugo Authors
+author: Seth White
 date: "2021-05-18"
 description: Data Science
 title: About Seth White
