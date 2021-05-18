@@ -4,7 +4,7 @@ aliases:
 - about-hugo
 - contact
 author: Hugo Authors
-date: "2019-02-28"
+date: "2021-05-18"
 description: Hugo, the world’s fastest framework for building websites
 title: About
 ---
