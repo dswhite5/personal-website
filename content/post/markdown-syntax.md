@@ -6,7 +6,7 @@ categories:
 - themes
 - syntax
 date: "2018-05-18"
-description: Sample article showcasing basic Markdown syntax and formatting for HTML
+description: Place holder markdown doc
   elements.
 series:
 - Themes Guide
