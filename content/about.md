@@ -9,28 +9,24 @@ description: Seth White Data Science Student
 title: About
 ---
 
-**Overview**
 
-My name is Seth White, I am currently a graduate student at Grand Valley State University in West Michigan. I recieved my bachelors degree from calvin college and worked as a mechanical engineer in developing HVAC systems for commercial buildings, primarily for Higher education facilities and then multi-Family housing. I am transitioning to the Data Science and Analytics field as I found the data analysis and modeling portions in my engineering field to be the most interesting. I want to spend my working career solving interesting problems and I think Data science will be great avenue to find interesting problems to solve. My currents interests are data analyis and visualization with R, Python and SAS and developing shiny apps and static sites with R to host projects I have completed.
+Written in Go, Hugo is an open source static site generator available under the [Apache Licence 2.0.](https://github.com/gohugoio/hugo/blob/master/LICENSE) Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.
 
+Hugo makes use of a variety of open source projects including:
 
-**Education**
+* https://github.com/yuin/goldmark
+* https://github.com/alecthomas/chroma
+* https://github.com/muesli/smartcrop
+* https://github.com/spf13/cobra
+* https://github.com/spf13/viper
 
-Calvin College - 2010
+Hugo is ideal for blogs, corporate websites, creative portfolios, online magazines, single page applications or even a website with thousands of pages.
 
-Bachelors of Arts Physics Dec 2010
+Hugo is for people who want to hand code their own website without worrying about setting up complicated runtimes, dependencies and databases.
 
-Grand Valley State University
+Websites built with Hugo are extremelly fast, secure and can be deployed anywhere including, AWS, GitHub Pages, Heroku, Netlify and any other hosting provider.
 
-Masters of Science in Data Science and Analytics - Estimated to Graduate in 2022
-
-**Work History**
-
-Hooker DeJong Architects and Engineers - Mechanical Engineer
-
-Peter Basso Associates  - Mechanical Designer
-
-Engineerin Plus Inc - Mechanical Desiger
+Learn more and contribute on [GitHub](https://github.com/gohugoio).
 
 
 
