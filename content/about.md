@@ -5,7 +5,7 @@ aliases:
 - contact
 author: Seth White
 date: "2021-05-18"
-description: Data Science
+description: A Brief Description About Myself
 title: About Seth White
 ---
 
