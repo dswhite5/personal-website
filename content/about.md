@@ -5,7 +5,7 @@ aliases:
 - contact
 author: Hugo Authors
 date: "2021-05-18"
-description: Hugo, the world’s fastest framework for building websites
+description: Data Science
 title: About Seth White
 ---
 
