@@ -6,7 +6,7 @@ aliases:
 author: Hugo Authors
 date: "2021-05-18"
 description: Hugo, the world’s fastest framework for building websites
-title: About
+title: About Seth White
 ---
 
 
