@@ -1,9 +1,10 @@
 ---
-title: "Plots and Plots and Plots"
+title: "Basic Plots in R"
 author: "Seth White"
 date: "2021-06-08"
 categories: ["R"]
 tags: ["Plot"]
+descriptin: Walk Through of Basic R plots
 output: html_document
 ---
 

@@ -1,12 +1,14 @@
 ---
-title: "Plots and Plots and Plots"
+title: "Basic Plots in R"
 author: "Seth White"
 date: "2021-06-08"
 categories: ["R"]
 tags: ["Plot"]
+descriptin: Walk Through of Basic R plots
 output: html_document
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="plots-and-plots" class="section level2">
@@ -61,7 +63,7 @@ library(cowplot)</code></pre>
         )
 
 human_droid</code></pre>
-<p><img src="/post/plots_files/figure-html/bar%20graph%20human-droid-1.png" width="672" />
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/bar%20graph%20human-droid-1.png" width="672" />
 Now we will make a second bar graph with the homeworlds of the most common species besides human and droids</p>
 <pre class="r"><code>other_species&lt;-starwars%&gt;%
   group_by(species)%&gt;%
@@ -85,10 +87,10 @@ Now we will make a second bar graph with the homeworlds of the most common speci
         )
 
 other_species</code></pre>
-<p><img src="/post/plots_files/figure-html/bar%20graph%20other%20species-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/bar%20graph%20other%20species-1.png" width="672" /></p>
 <p>Now we will combine those two bar graphs into one plot using cowplot</p>
 <pre class="r"><code>plot_grid(human_droid, other_species)</code></pre>
-<p><img src="/post/plots_files/figure-html/combine%20bar%20graphs-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/combine%20bar%20graphs-1.png" width="672" /></p>
 </div>
 <div id="histograms" class="section level2">
 <h2>Histograms</h2>
@@ -103,7 +105,7 @@ other_species</code></pre>
        x = &quot;Total County Population&quot;,
        y = &quot;Number of Counties&quot;)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/post/plots_files/figure-html/histograms1-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms1-1.png" width="672" /></p>
 <p>We will do the same but make a grid of histogram, one for each state in the Midwest dataset</p>
 <pre class="r"><code>midwest%&gt;%
   ggplot()+
@@ -115,7 +117,7 @@ other_species</code></pre>
        y = &quot;Number of Counties&quot;)+
   facet_wrap(~state)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/post/plots_files/figure-html/histograms1a-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms1a-1.png" width="672" /></p>
 <p>To try and get a little more clarity, we can separate the data into populations less than 100,000 people and look at that distribution for all 5 states</p>
 <pre class="r"><code>midwest%&gt;%
   ggplot()+
@@ -127,7 +129,7 @@ other_species</code></pre>
        y = &quot;Number of Counties&quot;)+
   xlim(0,100000)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/post/plots_files/figure-html/histograms2-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms2-1.png" width="672" /></p>
 <p>below we split the graph of populations below 100,000 into the different states</p>
 <pre class="r"><code>midwest%&gt;%
   ggplot()+
@@ -140,7 +142,7 @@ other_species</code></pre>
   xlim(0,100000)+
   facet_wrap(~state)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/post/plots_files/figure-html/histograms2a-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms2a-1.png" width="672" /></p>
 <p>For this last histogram we edited our graph a little bit to instead of showing counts we show the population of the top ten higest populatted counties in the midwest.</p>
 <pre class="r"><code>midwest%&gt;%
   arrange(desc(poptotal))%&gt;%
@@ -158,7 +160,7 @@ other_species</code></pre>
   theme(axis.text.x = element_text(size = 7.5,
                                    angle = 45,
                                    vjust = 0.8))</code></pre>
-<p><img src="/post/plots_files/figure-html/histograms3-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms3-1.png" width="672" /></p>
 </div>
 <div id="box-plots" class="section level2">
 <h2>Box Plots</h2>
@@ -182,14 +184,14 @@ midwest%&gt;%
                                  label = county))+
   labs(title = &quot;Boxplots of State County Populations&quot;)+
   coord_flip()</code></pre>
-<p><img src="/post/plots_files/figure-html/boxplots1-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/boxplots1-1.png" width="672" /></p>
 <p>Next we show the same graph but exclude any counties above 500,000 people. This gives us a better look of what the population distributions actually look like</p>
 <pre class="r"><code>midwest%&gt;%
   ggplot()+
   geom_boxplot(mapping = aes(x=state, y=poptotal))+
   labs(title = &quot;Boxplots of State County Populations below 500,000&quot;)+
   coord_flip(ylim = c(0,500000))</code></pre>
-<p><img src="/post/plots_files/figure-html/boxplots2-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/boxplots2-1.png" width="672" /></p>
 <p>This last plot is a new box plot based on the data points with populations above 500,000</p>
 <pre class="r"><code>midwest%&gt;%
   ggplot()+
@@ -197,5 +199,5 @@ midwest%&gt;%
   labs(title = &quot;Boxplots of State County Populations&quot;)+
   coord_flip()+
   ylim(500000,5200000)</code></pre>
-<p><img src="/post/plots_files/figure-html/boxplots3-1.png" width="672" /></p>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/boxplots3-1.png" width="672" /></p>
 </div>
