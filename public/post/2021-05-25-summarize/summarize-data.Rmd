@@ -1,0 +1,109 @@
+---
+title: "Summarizing Data"
+author: "Seth White"
+date: "2021-05-25"
+categories: ["R"]
+tags: ["Plot"]
+description: Data Summaries in R
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summarize Data
+
+## Intorduction and Load Packages
+
+For this post we are going to just quickly review some of the task and possibilities available when trying to summarize data. We will look at the code required to do these summaries and then compare the different types of output. We are going to be looking at a couple of different data sets, a few of which should be familiar. I got these data sets from R or installed R packages. 
+
+We will start with loading in the tidyverse set of packages. I will primarily be using the tidyverse functions when working with R
+
+```{r packages, message=FALSE}
+library(tidyverse)
+```
+
+## Summary Function
+
+Next we will look at the summary function. The summary function is useful to get a quick look at how many variables are in the data set and whether they are numeric or categorical. The summary function also gives some summary information for each of the variables such as min, max, and mean. See the code and output below for summary examples on some of the data sets we will be working with.
+
+```{r iris summary}
+summary(iris)
+```
+```{r midwest summary}
+summary(midwest)
+```
+
+
+```{r storms summary}
+summary(storms)
+```
+
+
+Next we can look at making some summary tables for ourselves.
+
+## Summary Tables
+
+Summary Tables use a mixture of commands to highlight different aspects or interesting insights within the data. We can use a variety of tidyverse functions to create these tables. `group_by()`, `filter()`, `summarise()`, `count()`, `arrange()`, and `mutate()` are some the most common functions to help create the tables
+
+For the iris data set we created two tables. One shows which flowers have the max and min sepal width and one the shows which flowers have max and min petal width
+
+```{r iris summary tables}
+iris%>%
+  group_by(Species)%>%
+  filter(Sepal.Width == min(Sepal.Width) | Sepal.Width == max(Sepal.Width))
+
+iris%>%
+  group_by(Species)%>%
+  filter(Petal.Width == min(Petal.Width) | Petal.Width == max(Petal.Width))
+
+
+```
+
+For the midwest data set we made another two tables. One table shows the number of counties in each state, and subsequently, which states are included in the midwest data set . Each row in the data set is a county in a separate state, so by grouping by state and then listing the counts of each state, we get the number of counties and which states are included.
+
+The second table shows which county in each state has the highest total population. By first grouping for each state and using filter to find the maximum value of the variable poptotal within each group. We get the most populated county within each state.
+
+```{r midwest summary tables}
+ midwest%>%
+  group_by(state)%>%
+  summarise(`Number of Counties` = n())
+
+midwest%>%
+  group_by(state)%>%
+  filter(poptotal == max(poptotal))%>%
+  select(county, state, poptotal)
+
+
+```
+
+For the storm data set we once again created two tables to highlight different aspects of the data set.
+
+In the first table we show max wind speed and max air pressure sustained in the storms center for the first and last year of the data set
+
+For the second table we showed the top 5 years in terms of number of storms recorded.
+
+
+```{r storms summary tables}
+storms%>%
+  filter(year == max(year) | year == min(year))%>%
+  group_by(year)%>%
+  summarise(max_wind = max(wind),
+         max_pressure = max(pressure))
+
+storms%>%
+  group_by(year)%>%
+  summarise(count = n())%>%
+  arrange(desc(count))%>%
+  head(5)
+
+```
+
+
+While the `summary()` function is useful for a quick review of the number and types of variables in the data set. Creating new sets of tables to highlight specific aspects of the data is possible with data transformation commands from the tidyverse packages in R
+
+
+
+
+

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	
+	<meta name="generator" content="Hugo 0.82.0" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta property="og:title" content="Basic Plots in R">
+	
+	
+	<meta name="author" content="Seth White"><meta name="keywords" content="Plot"><meta name="description" content="Walk Through of Basic R plots"><meta property="og:title" content="Basic Plots in R" />
+<meta property="og:description" content="Walk Through of Basic R plots" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/post/2021-06-08-plots/plots/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-06-08T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-06-08T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Basic Plots in R"/>
+<meta name="twitter:description" content="Walk Through of Basic R plots"/>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/all.css" />
+	<link rel="stylesheet" href="/css/katex.min.css" crossorigin="anonymous">
+	<script defer src="/js/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="/js/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			renderMathInElement(document.body, {
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false}
+				]
+		});
+		});
+	</script><title>Basic Plots in R | David Seth White</title>
+
+
+</head>
+<body><header>
+	
+	<div id="avatar">
+		<a href="/">
+		  <img src="/img/profile.JPG" alt="David Seth White">
+		</a>
+	</div>
+	
+	<div id="titletext"><h2 id="title"><a href="/">David Seth White</a></h2></div>
+	<div id="title-description"><p id="subtitle"><a href="https://david-seth-white.netlify.app/">Seth White</a> is a Graduate student in the Data Science and Analytics Program at Grand Valley State University in Grand Rapids MI.</p><div id="social">
+			<nav>
+				<ul>
+					<li><a href="https://github.com/dswhite5"><i title="Github" class="icons fab fa-github"></i></a></li>
+					<li><a href="/index.xml"><i title="RSS" class="icons fas fa-rss"></i></a></li></ul>
+			</nav>
+		</div>
+	</div>
+	
+	<div id="mainmenu">
+		<nav>
+			<ul>
+				
+				<li><a href="/">Home</a></li>
+				
+				<li><a href="/post">All Posts</a></li>
+				
+				<li><a href="/about">About</a></li>
+				
+				<li><a href="/tags">Tags</a></li>
+				
+				<li><a href="/categories">Categories</a></li>
+				
+			</ul>
+		</nav>
+	</div>
+	
+</header>
+<main><div class="post">
+	
+	<div class="author">
+	
+	</div>
+	<div class="post-header">
+	
+		<div class="meta">
+			
+			<div class="date">
+				<span class="day">08</span>
+				<span class="rest">Jun 2021</span>
+			</div>
+			
+		</div>
+		
+		<div class="matter">
+			<h1 class="title">Basic Plots in R</h1>
+		</div>
+	</div>
+	<div class="markdown">
+		
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="basic-plots-in-r" class="section level2">
+<h2>Basic Plots in R</h2>
+<p>For this post we are going to work through doing some of the basic plots in R. I am going to start with loading in the appropriate packages. I will be using he tidyverse set of commands which includes ggplot</p>
+<pre class="r"><code>library(tidyverse)
+library(ggrepel)
+library(cowplot)</code></pre>
+</div>
+<div id="bar-graphs" class="section level2">
+<h2>Bar Graphs</h2>
+<p>The first plot we will look at are bar graphs, we will be using the starwars data set for the bar graphs. Bar graphs are great for categorical data and getting counts of different levels of categorical data in a data set. The Starwars data set included in the dplyr package has some good examples of that</p>
+<p>first we group and arragne the data to get a count of the different species in star wars</p>
+<p>Then we will make a bar graph of the just the human and droids in starwars and what homeworld they are from</p>
+<pre class="r"><code>starwars%&gt;%
+  select(species)%&gt;%
+  group_by(species)%&gt;%
+  count()%&gt;%
+  arrange(desc(n))</code></pre>
+<pre><code>## # A tibble: 38 x 2
+## # Groups:   species [38]
+##    species      n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 Human       35
+##  2 Droid        6
+##  3 &lt;NA&gt;         4
+##  4 Gungan       3
+##  5 Kaminoan     2
+##  6 Mirialan     2
+##  7 Twi&#39;lek      2
+##  8 Wookiee      2
+##  9 Zabrak       2
+## 10 Aleena       1
+## # ... with 28 more rows</code></pre>
+<pre class="r"><code>human_droid &lt;- starwars%&gt;%
+  filter(species == &quot;Human&quot; | species == &quot;Droid&quot;)%&gt;%
+  ggplot()+
+  geom_bar(mapping = aes(x=homeworld, fill = species),
+           position = &quot;dodge&quot;)+
+  labs(title = &quot;World Counts in Star Wars&quot;,
+       x= &quot;Different Homeworlds&quot;,
+       y = &quot;Number of Characters from World&quot;,
+       fill = &quot;Character Species&quot;)+
+  theme_minimal_hgrid()+
+  theme(axis.text.x = element_text(angle = 90, 
+                                   vjust = 0.7,
+                                   size = 10),
+        axis.title = element_text(size = 12),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        plot.title = element_text(size = 12)
+        )
+
+human_droid</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/bar%20graph%20human-droid-1.png" width="672" />
+Now we will make a second bar graph with the homeworlds of the most common species besides human and droids</p>
+<pre class="r"><code>other_species&lt;-starwars%&gt;%
+  group_by(species)%&gt;%
+  mutate(character_count = n())%&gt;%
+  filter(character_count&lt;6 &amp; character_count&gt;1)%&gt;%
+  ggplot()+
+  geom_bar(mapping = aes(x=homeworld, fill = species),
+           position = &quot;dodge&quot;)+
+  labs(title = &quot;World Counts in Star Wars&quot;,
+       x= &quot;Different Homeworlds&quot;,
+       y = &quot;Number of Characters from World&quot;,
+       fill = &quot;Character Species&quot;)+
+  theme_minimal_hgrid()+
+  theme(axis.text.x = element_text(angle = 90, 
+                                   vjust = 0.7,
+                                   size = 10),
+        axis.title = element_text(size = 12),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        plot.title = element_text(size = 12)
+        )
+
+other_species</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/bar%20graph%20other%20species-1.png" width="672" /></p>
+<p>Now we will combine those two bar graphs into one plot using cowplot</p>
+<pre class="r"><code>plot_grid(human_droid, other_species)</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/combine%20bar%20graphs-1.png" width="672" /></p>
+</div>
+<div id="histograms" class="section level2">
+<h2>Histograms</h2>
+<p>Now we will focus on creating some histograms of the midwest data, since that data set has a variety of numeric variables</p>
+<p>The first histogram that we are going to make is one showing number of counties with a certain population in the midwest. There is a wide range of values in the county populations so its hard to see anything in this graph.</p>
+<pre class="r"><code>midwest%&gt;%
+  ggplot()+
+  geom_histogram(mapping = aes(x=poptotal, fill = state),
+                 position = &quot;dodge&quot; )+
+  labs(title = &quot;Histogram of County Populations&quot;,
+       subtitle = &quot;In the Midwest&quot;,
+       x = &quot;Total County Population&quot;,
+       y = &quot;Number of Counties&quot;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms1-1.png" width="672" /></p>
+<p>We will do the same but make a grid of histogram, one for each state in the Midwest dataset</p>
+<pre class="r"><code>midwest%&gt;%
+  ggplot()+
+  geom_histogram(mapping = aes(x=poptotal, fill = state), 
+                 position = &quot;dodge&quot;)+
+  labs(title = &quot;Histogram Grid of County Populations by State&quot;,
+       subtitle = &quot;In the Midwest&quot;,
+       x = &quot;Total County Population&quot;,
+       y = &quot;Number of Counties&quot;)+
+  facet_wrap(~state)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms1a-1.png" width="672" /></p>
+<p>To try and get a little more clarity, we can separate the data into populations less than 100,000 people and look at that distribution for all 5 states</p>
+<pre class="r"><code>midwest%&gt;%
+  ggplot()+
+  geom_histogram(mapping = aes(x=poptotal, fill = state), 
+                 position = &quot;dodge&quot; )+
+  labs(title = &quot;Histogram of County Populations&quot;,
+       subtitle = &quot;Less than 100,000 in Midwest&quot;,
+       x = &quot;Total County Population&quot;,
+       y = &quot;Number of Counties&quot;)+
+  xlim(0,100000)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms2-1.png" width="672" /></p>
+<p>below we split the graph of populations below 100,000 into the different states</p>
+<pre class="r"><code>midwest%&gt;%
+  ggplot()+
+  geom_histogram(mapping = aes(x=poptotal, fill = state),
+                 position = &quot;dodge&quot;)+
+  labs(title = &quot;Histogram Grid of County Populations by State&quot;,
+       subtitle = &quot;Less than 100,000 in Midwest&quot;,
+       x = &quot;Total County Population&quot;,
+       y = &quot;Number of Counties&quot;)+
+  xlim(0,100000)+
+  facet_wrap(~state)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms2a-1.png" width="672" /></p>
+<p>For this last histogram we edited our graph a little bit to instead of showing counts we show the population of the top ten higest populatted counties in the midwest.</p>
+<pre class="r"><code>midwest%&gt;%
+  arrange(desc(poptotal))%&gt;%
+  head(10)%&gt;%
+  ggplot()+
+  geom_histogram(mapping = aes(x=county, y = poptotal, fill = state),
+                 stat = &quot;identity&quot;, 
+                 position = &quot;dodge&quot; )+
+  labs(title = &quot;Histogram of  10 largest County Populations&quot;,
+       subtitle = &quot;In the MidWest&quot;,
+       y= &quot;Total County Population&quot;,
+       x = &quot;County Name&quot;,
+       fill = &quot;State Name&quot;)+
+  theme_minimal_hgrid()+
+  theme(axis.text.x = element_text(size = 7.5,
+                                   angle = 45,
+                                   vjust = 0.8))</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/histograms3-1.png" width="672" /></p>
+</div>
+<div id="box-plots" class="section level2">
+<h2>Box Plots</h2>
+<p>We will look at the same data with boxplots</p>
+<p>THis first plot is a box plot for each state with the top 5 counties by population highlighted in red</p>
+<pre class="r"><code>midwest_toppop&lt;-midwest%&gt;%
+  arrange(desc(poptotal))%&gt;%
+  head(5)
+
+midwest%&gt;%
+  ggplot()+
+  geom_boxplot(mapping = aes(x=state, 
+                             y=poptotal))+
+  geom_point(data=midwest_toppop, 
+               mapping = aes(x=state, 
+                             y = poptotal), 
+               color = &quot;red&quot;)+
+  geom_label_repel(data=midwest_toppop,
+                   mapping = aes(x=state, 
+                                 y = poptotal, 
+                                 label = county))+
+  labs(title = &quot;Boxplots of State County Populations&quot;)+
+  coord_flip()</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/boxplots1-1.png" width="672" /></p>
+<p>Next we show the same graph but exclude any counties above 500,000 people. This gives us a better look of what the population distributions actually look like</p>
+<pre class="r"><code>midwest%&gt;%
+  ggplot()+
+  geom_boxplot(mapping = aes(x=state, y=poptotal))+
+  labs(title = &quot;Boxplots of State County Populations below 500,000&quot;)+
+  coord_flip(ylim = c(0,500000))</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/boxplots2-1.png" width="672" /></p>
+<p>This last plot is a new box plot based on the data points with populations above 500,000</p>
+<pre class="r"><code>midwest%&gt;%
+  ggplot()+
+  geom_boxplot(mapping = aes(x=state, y=poptotal))+
+  labs(title = &quot;Boxplots of State County Populations&quot;)+
+  coord_flip()+
+  ylim(500000,5200000)</code></pre>
+<p><img src="/post/2021-06-08-plots/plots_files/figure-html/boxplots3-1.png" width="672" /></p>
+</div>
+
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Categories</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/categories/r/"> r </a>
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+	
+		
+	
+	
+	
+	<div class="tags">
+		<div class="taxosfloating_left">
+			<p>Tags</p>
+		</div>
+		<div class="termsfloating_right">
+			<p>
+			
+			
+			
+			<a href="/tags/plot/"> plot </a>
+			
+			
+			
+			
+			
+			</p>
+		</div>
+		<div class="clearit"></div>
+		
+		
+		
+		
+		
+	</div></div>
+
+  </main>
+<footer>
+	 © Copyright notice | <a href="https://github.com/dataCobra/hugo-vitae">Vitae</a> theme for <a href="https://gohugo.io">Hugo</a> 
+	
+	
+	
+</footer>
+
+
+</body>
+</html>

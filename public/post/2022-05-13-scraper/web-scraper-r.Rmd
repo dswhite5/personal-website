@@ -3,9 +3,10 @@ title: "Web Scraper in R"
 author: "Seth White"
 date: "2022-12-05"
 categories: ["R"]
-tags: ["scraper","html"]
+tags: ["html"]
 description: Walk Through of Web Scraper in R
 output: html_document
+draft: false
 ---
 
 ```{r setup, include=FALSE}
