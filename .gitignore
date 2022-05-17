@@ -5,3 +5,6 @@
 Task 1.png
 task1.png
 resources/
+\\.Rmd$
+\\.Rmarkdown$
+_cache$
