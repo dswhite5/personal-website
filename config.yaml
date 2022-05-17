@@ -1,4 +1,4 @@
-baseURL: /
+baseURL: "https://david-seth-white.netlify.app/"
 languageCode: en-us
 defaultContentLanguage: en
 author: Hugo Authors
