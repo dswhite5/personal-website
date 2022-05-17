@@ -58,3 +58,8 @@ menu:
     - name: Categories
       url: /categories
       weight: 5
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
