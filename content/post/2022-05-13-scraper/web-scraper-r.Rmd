@@ -6,7 +6,6 @@ categories: ["R"]
 tags: ["html"]
 description: Walk Through of Web Scraper in R
 output: html_document
-draft: false
 ---
 
 ```{r setup, include=FALSE}
