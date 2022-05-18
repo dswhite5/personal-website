@@ -1,0 +1,132 @@
+---
+title: "Web Scraper in R"
+author: "Seth White"
+date: "2022-05-12"
+categories: ["R"]
+tags: ["html"]
+description: Walk Through of Basic Web scraper in R
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Web scrapin is a technique were a computer program is taught how to parse the HTML code of a webpage to collect text or numeric data available on that page. This allows an individual to quickly compile data or information from a website or websites rather than having to get that information manually. A famous example is so many people were scraping the website Wikipedia for information that The entirety of Wikipedia is available for download to avoid so many people scraping the site. Not all websites want you to scrape their sites for information. Some reasons being that it takes too much effort from the website, the programs scraping the site still have to interact with the server hosting the site. Security or confidentiality is another reason to potentially discourage scraping; facebook does not appreciate it when user's personal information is scraped from their profiles. When it is allowed however, scraping can be a useful tool for collect data and should be a tool in any data scientists tool kit, especially then languages like R make it particularly easy to do web scraping. This post will do a brief walk through of a scraping data off of www.hockey-reference.com related to the NHL team the Detroit Red Wings. This walk through assumes you have at least some working knowledge of the R programming language.
+
+## R packages
+
+For this tutorial the R packages rvest, robotstxt and tidyverse will be used to do the scraping. If the packages are not currently installed be sure to use `install.packages` to download the them into the local R package library. `rvest` contains the actual functions for scraping the files, robotstxt helps R to read robots.txt files for different websites to check what the rules are for bots scraping the site, and tidyverse is used for commands related to formatting the data once it has been scraped and for the pipeline used to formats commands in R
+
+```{r packages, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(rvest)
+library(robotstxt)
+
+```
+
+## Is it cool
+
+The first thing to do when scraping a site is to access the robot.txt file for that site to see it is ok to scrape it for data. If the website is ok with scraping taking place the `path_allowed` function will return true. It should be noted that even if the website allows for scraping there may still be limits for what the website will allow you to do with the data or limits on how often you can scrape or access the site. This information, especially the uses of the data, should be reviewed. How frequently you can scrape is often covered in the robots.txt file. www.hockey-reference.com allows us to scrape, but has rules for usage, you aren't allowed to scrape their site for data and then set up a competing site with that data for instance.
+
+```{r permissions}
+paths_allowed("https://www.hockey-reference.com/teams/DET/2021.html")
+```
+
+## The website 
+
+
+The next step is to read the html of the web page that has the desired information. The function from rvest for that is `read_html`. It is best to save that to a variable to then be able to search the file for the particular information desired. This post uses the variable `wings_page` for the html elements and the website is the hockey-reference page with data for the Detroit Red Wings for the 2020/2021 season 
+
+```{r read html}
+wings_page <- read_html("https://www.hockey-reference.com/teams/DET/2021.html")
+```
+
+## Particular HTML elements
+
+Once the html page is read you can search it for particular pieces of information. To do this, the program has to know what particular html element to search for. For this post I used selector gadget, an extension of the Chrome browser, which gives the html element for a highlighted piece of the website. The first example looks at the roster data and gets the number for each player. `html_nodes` finds the desired elements, `html_text` gets the text from that node, and `as.numeric` converts it to a number for use in the data set to be created. This creates a vector of the different player numbers and the information is saved to the variable `player_number`. Notice '#roster tbody th' is the html element that contains the player numbers.
+
+```{r html elements}
+player_number <- wings_page %>%
+  html_nodes("#roster tbody th") %>%
+  html_text() %>%
+  as.numeric()
+```
+
+## Player Roster
+
+Now that one element of the roster has been collected. The rest of the roster can be searched for and turned into a data table that you can have access to. First the remaining html elements are found and saved as usable data.
+
+```{r roster elements, warning=FALSE}
+player_position <- wings_page %>%
+  html_nodes("#roster td:nth-child(4)") %>%
+  html_text()
+
+player_name <- wings_page %>%
+  html_nodes("#roster a") %>%
+  html_text()
+
+player_age <- wings_page %>%
+  html_nodes("#roster .center+ td.center") %>%
+  html_text() %>%
+  as.numeric()
+
+player_height <- wings_page %>%
+  html_nodes("#roster .right:nth-child(6)") %>%
+  html_text()
+
+player_weight <- wings_page %>%
+  html_nodes("#roster .right+ .right") %>%
+  html_text() %>%
+  as.numeric()
+
+player_shoots <- wings_page %>%
+  html_nodes("#roster .right~ .right+ .center") %>%
+  html_text()
+
+player_exp <- wings_page %>%
+  html_nodes("#roster .right:nth-child(9)") %>%
+  html_text() %>%
+  as.numeric()
+
+player_birth_date <- wings_page %>%
+  html_nodes("#roster .right+ .left") %>%
+  html_text()
+```
+
+
+Next those data elements are combined into a tibble.
+
+```{r player roster}
+roster <- tibble(Number = player_number,
+                 Name = player_name,
+                 Position = player_position,
+                 Age = player_age,
+                 Height = player_height,
+                 weight = player_weight,
+                 Shoots = player_shoots,
+                 Experience = player_exp,
+                 Birth_Date = player_birth_date
+                 )
+
+
+roster
+```
+
+As visible above, the roster of the Detroit Red Wings from the 2020/2021 season is available for use.
+
+## When to use
+
+The web scrape above created a data table that could be imported to use on a local computer to be shared with other people or used for data analysis of some kind. But this exact table is available for download from the site for free. So why build a web scraper? One reason would be is if there was a need to download a lot of data tables off of the site. For each season there are 10 tables available to download, what if someone wanted 10 seasons or 20 season worth of data? That is a lot of clicking on individual tables where as the different html elements are probably the same for each season, so for the roster example above, only the website name would need to be changed for a specific season and an individual could gather the rosters for as many seasons or as many teams as necessary. Another use for web scraping is if the data being scraped is constantly changing, what if the roster was updated everyday? The scraping process could be automated to compile a new roster once a day and keep the information up-to-date.
+
+## Conlcusion
+
+Web scraping with R is relatively straight forward and an easy way to collect data off of the web for use in data analysis. This was a simple example and getting the different html elements necessary can be time consuming, but the code can often be formatted to easily collect data off of multiple pages. Not every page is ok with being scraped and often has rules regarding how the data can be used. However a basic knowledge of web scraping is a useful tool for any programmer. 
+
+
+
+
+
