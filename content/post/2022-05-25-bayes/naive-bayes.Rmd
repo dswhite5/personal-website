@@ -36,7 +36,9 @@ It is best to start with looking at and understanding the data that is going to 
 import pandas as pd
 
 pond_hockey = pd.read_csv('C:/Users/sethh/OneDrive/Documents/R/resume_website/content/post/2022-05-25-bayes/data/play_pond_hockey.txt', sep = ' ', header = None)
+```
 
+```{python}
 print(pond_hockey)
 
 ```

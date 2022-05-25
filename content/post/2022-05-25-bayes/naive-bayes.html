@@ -23,6 +23,20 @@ output: html_document
 <div id="the-data" class="section level2">
 <h2>The Data</h2>
 <p>It is best to start with looking at and understanding the data that is going to be used to teach the Naive Bayes classifier the probabilities. Below the data is loaded from a csv file into a panda data frame. The data consists of five columns. First the class column, then wind, air temp, ice conditions, and sky. The columns are not labeled in this case, as this data exists only for this post.The class column has levels yes and no (yes or no it is a good day to play pond hockey), the wind column has levels strong and weak, the air temp column has levels warm and cold, ice conditions has levels smooth, rough, and soft, and the sky column has levels sunny, snowy, and cloudy. Each column represents different weather conditions to play pond hockey in. I have hid the code to load in the data to not show my computers file path online.</p>
+<pre class="python"><code>print(pond_hockey)</code></pre>
+<pre><code>##       0       1     2       3       4
+## 0   yes  strong  warm  smooth   sunny
+## 1   yes    weak  warm  smooth   sunny
+## 2    no  strong  cold   rough   snowy
+## 3    no  strong  cold    soft   snowy
+## 4    no    weak  cold   rough  cloudy
+## 5   yes    weak  cold  smooth  cloudy
+## 6   yes    weak  cold  smooth   snowy
+## 7    no  strong  warm    soft   sunny
+## 8   yes    weak  warm  smooth   snowy
+## 9   yes    weak  warm  smooth   snowy
+## 10   no  strong  cold   rough   snowy
+## 11  yes  strong  cold  smooth   sunny</code></pre>
 </div>
 <div id="how-it-works" class="section level2">
 <h2>How it Works</h2>
