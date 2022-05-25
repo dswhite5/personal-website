@@ -1,0 +1,292 @@
+---
+title: "Machine Learning in Python"
+author: "Seth White"
+date: "2022-05-25"
+categories: ["Python"]
+tags: ["Naive-Bayes"]
+description: Simple Naive Bayes Classifier in Python
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r include=FALSE}
+library(reticulate)
+```
+
+## Machine Learning 
+
+Machine Learning is a powerful tool used by companies around the world to solve new problems or re-solve old ones. Most people will use a program on a daily basis that relies on machine learning and might not know it. Machine learning can be applied to most topics regrading technology(especially in a person's phone) including driving directions, auto correct when typing or texting, facial recognition, classifying images and a lot of others. Some of the most popular algorithms used are Decision Trees, Neural Networks and Naive Bayes. This post is going to a brief and simple overview of the Naive Bayes learning algorithm and how to apply it to classify instances. 
+
+## Naive Bayes classifier
+
+A Naive Bayes classifier is a probabilistic classifying method and is form of supervised leanring. This means it uses knowledge from previous instances to calculate the probability of a new instance(or item) being in a certain class. For example, classifying whether or not someone will default on a loan. So the Naive Bayes method could put them in the yes class(will default on the loan) or the no class (wont default on a loan). This post wont spend any time deriving the Naive Bayes equation or the meaning behind the name Naive Bayes. But will look at a simple practical example to get an idea of how a Naive Bayes classifier works. 
+
+The example in this post will look at is classifying whether or not it is a good day to play pond hockey. This will also work through the algorithm from scratch, meaning there wont be any use of pre programmed machine learning package such as scikitlearn. 
+
+## The Data
+
+It is best to start with looking at and understanding the data that is going to be used to teach the Naive Bayes classifier the probabilities. Below the data is loaded from a csv file into a panda data frame. The data consists of five columns. First the class column, then wind,  air temp, ice conditions, and sky. The columns are not labeled in this case, as this data exists only for this post.The class column has levels yes and no (yes or no it is a good day to play pond hockey), the wind column has levels strong and weak, the air temp column has levels warm and cold, ice conditions has levels smooth, rough, and soft, and the sky column has levels sunny, snowy, and cloudy. Each column represents different weather conditions to play pond hockey in.
+
+```{python}
+# maybe hide this as well so as to not show file directory in blog
+import pandas as pd
+
+pond_hockey = pd.read_csv('C:/Users/sethh/OneDrive/Documents/R/resume_website/content/post/2022-05-25-bayes/data/play_pond_hockey.txt', sep = ' ', header = None)
+
+print(pond_hockey)
+
+```
+
+## How it Works
+
+To use a Naive Bayes classifier, two values have to be calculated $P(C_1|\boldsymbol{x})$ and $P(C_2)|\boldsymbol{x}$. These are the probabilities of an instance belonging to class $C_1$ or $C_2$ given that they have attributes $\boldsymbol{x}$. This can be generalized if there are more than two classes to $P(C_i|\boldsymbol{x})$ or the probability that an instance in is class $C_i$ given the attribute values of $\boldsymbol{x}$. For the example in this post, it would be $P(yes|\boldsymbol{x})$ is probability of belong to class yes given $\boldsymbol{x}$ where $\boldsymbol{x} = (strong, warm, smooth, sunny)$. 
+
+the equation for $P(C_i | \boldsymbol{x})$ is as follows 
+
+$$ P(C_i | \boldsymbol{x}) = P(C_i)*\Pi P(x_j|C_i) $$
+
+in plain words this translates to the probability that an instance belongs to class $C_i$ is the probability of any instance being in class $C_i$ multiplied by the probabilities of having the attributes $x_i$ from $\boldsymbol{x}$ given that an instance is in class $C_i$. If that sounds a little confusing, that is ok, that is why this post is going to walk through a simple example. 
+
+For the pond hockey example. If there was an instance that looked like this $\boldsymbol{x} = (strong, warm, smooth, sunny)$ then the probability that instance $\boldsymbol{x}$ is in class yes looks like this
+
+$P(yes|\boldsymbol{x}) = P(yes)\cdot P(wind = strong|class = yes)\cdot P(air = warm|class = yes)\cdot P(ice = smooth|class = yes)\cdot P(sky = sunny|class = yes)$
+
+To classify the instance the similar probability would be calculated for class no
+
+$P(no|\boldsymbol{x}) = P(no)\cdot P(wind = strong|class = no)\cdot P(air = warm|class = no)\cdot P(ice = smooth|class = no)\cdot P(sky = sunny|class = no)$
+
+which ever of the two probabilities is greater $P(yes|\boldsymbol{x})$ or $P(no|\boldsymbol{x})$ that is the class the instance belongs to.
+
+To calculate the probabilities we get counts of the number of times the different scenarios happen in previous data.
+
+$P(C_i) = \frac{the\:number\:of\:instances\:that\:are\:class\:C_i}{the\:total\:number\:of\:instances}$
+
+$P(x_j| class = C_i) = \frac{the\:number\:of\:instances\:that\:have\:have\:attribute\:x_j\:and\:are\:in\:class\:C_i}{total\:number\:of\:instances\:with\:class\:C_i}$
+
+So again for the pond hockey example, 
+
+$P(yes) = \frac{number\:of\:instances\:class\:=\:yes}{total\:number\:of\:instance} = \frac{7}{12} = 0.583$
+
+$P(wind = strong|class = yes) = \frac{number\:of\:instances\:where\:wind\:=\:strong\:and\:class\:=\:yes}{Total\:number\:of\:instances\:where\:class\:=\:yes} = \frac{2}{7} = 0.286$
+
+The values for the probabilities are calculated as shown above by counting the instances in the data. So to develop a Naive Bayes classifier, a program has to be built to count all of the instances and the number of times each attribute level appears with each class and use those values in fractions to calculate the necessary probabilities. This easy to see by counting the 7 yes instances in the pond hockey data out from the total 12 instances
+
+Next Python is used to get the counts needed to do the calculations
+
+## Initialize counts
+
+First an empty dictionary called `pond_hockey_counts` is created to collect the counts needed and a empty set called `conditions` is created to store the different weather conditions. A set is used to for the conditions as sets don't store duplicate information and this is useful when looping through the different rows. 
+
+the first while loop is used to extract the different conditions from `pond_hockey`. The second loop adds sets of the conditions for each attribute to a dictionary called `attr_cat`. The third while loop initializes the counts for `pond_hockey_counts`. The counts in `pond_hockey_counts` are initialized at 1 instead 0 to help eliminate 0's from the probability calculations and which would reduce those probabilities to 0. This shouldn't really be a problem for this example but in practical applications of Naive Bayes data if a attribute level(in this case a weather condition) is present in one class but not the other(wind = strong is only in the yes class for instance) then the class probability calculation could be reduced to 0 as 0 multiplied by other numbers is 0(if wind = strong is only in yes then the probability for wind = strong in the no class is 0). Adding a 1 to the counts for each attribute level(this adds a 1 in the numerator of the probability calc) and then adding the number of possible category options (for wind there are 2: strong and weak) to the denominator prevents the missing probability from going to 0 and instead makes it very small. In math terms that changes the probability calculation to
+
+$$P(x_j| class = C_i) = \frac{the\:number\:of\:instances\:that\:have\:have\:attribute\:x_j\:and\:are\:in\:class\:C_i\:+\:1}{total\:number\:of\:instances\:with\:class\:C_i\:+\:Number\:of\:attribute\:levels}$$
+
+for example, for wind = strong, there are only two category levels for wind, strong and weak, so the probability equation now looks like this
+
+$$P(wind = strong|class = yes) = \frac{number\:of\:instances\:where\:wind\:=\:strong\:and\:class\:=\:yes\:+\:1}{Total\:number\:of\:instances\:where\:class\:=\:yes\:+\:2} = \frac{3}{9} = 0.333$$
+
+We can check this number against the what the computer has calculated to see if the probability calculations are being performed correctly.
+
+```{python}
+
+pond_hockey_counts = dict() #initialize dictionary to collect counts
+conditions = set() #intitialize set to collect words in pond hockey categories to help initialize counts
+
+#create set with all of the different attribute levels(weather conditions)
+i=0
+while i <pond_hockey.shape[0]: #pond_hockey.shape[0] is the number of rows
+  j =1
+  while j < len(pond_hockey.loc[i]): #len(pond_hockey.loc[i]) is the number of items in each row
+    conditions.add(pond_hockey.loc[i][j]) #add each word to set. sets wont add duplicate words
+    j+=1
+  i +=1
+  
+#create dictionary where values are sets of the the different levels for each attribute
+attr_cat = dict() #dictionary to store number of categories for each attribute
+i=1 #start on column 1 as column 0 is the class in this instance
+while i < pond_hockey.shape[1]: #pond_hockey.shape[1] is the number of columns
+  attr_cat['attr_'+str(i)] = set() #intitialize empty set for each category count
+  j=0
+  while j < len(pond_hockey[i]): # len(pond_hockey[i]) is the number of rows in each column, could have also used pond_hockey.shape[0]
+    attr_cat['attr_'+str(i)].add(pond_hockey[i][j]) #add each word to set for attribute category counts, can get count from len(attr_cat[key])
+    j+=1
+  i+=1
+
+
+#intitialize counts
+for word in conditions:
+  pond_hockey_counts['yes_'+str(word)] = 1 #dont want to initialize sets at zero since a probability of zero can break algortihm, more important for when there are training and test sets, but working it out here
+  pond_hockey_counts['no_'+str(word)] = 1
+
+pond_hockey_counts['yes_counts'] = 0
+pond_hockey_counts['no_counts'] = 0
+
+
+```
+
+
+## get counts
+
+a while loop with a series of if/else statements is used to get the counts for each attribute level and class combination. First each instance is checked for whether it is in the yes class or no class, then a count is added to attribute level for the class the instance is in.  
+
+```{python}
+
+#get counts for yes and no instances and attribute levels for yes and no
+i =0 
+while i < pond_hockey.shape[0]: #loops through each row
+  if pond_hockey.loc[i][0] == 'yes': #checks each attribute of each row, check class first to divy coutns correctly
+    pond_hockey_counts['yes_counts']+=1
+    if pond_hockey.loc[i][1] == 'strong':
+      pond_hockey_counts['yes_strong']+=1
+    else:
+      pond_hockey_counts['yes_weak'] += 1
+    if pond_hockey.loc[i][2] == 'warm':
+      pond_hockey_counts['yes_warm']+=1
+    else:
+      pond_hockey_counts['yes_cold'] += 1
+    if pond_hockey.loc[i][3] == 'smooth':
+      pond_hockey_counts['yes_smooth']+=1
+    elif pond_hockey.loc[i][3] == 'rough':
+      pond_hockey_counts['yes_rough'] += 1
+    else:
+      pond_hockey_counts['yes_soft'] += 1
+    if pond_hockey.loc[i][4] == 'sunny':
+      pond_hockey_counts['yes_sunny']+=1
+    elif pond_hockey.loc[i][4] == 'snowy':
+      pond_hockey_counts['yes_snowy'] += 1
+    else:
+      pond_hockey_counts['yes_cloudy'] += 1
+  else:
+    pond_hockey_counts['no_counts'] += 1 #if class is not a yes, then add counts to no column
+    if pond_hockey.loc[i][1] == 'strong':
+      pond_hockey_counts['no_strong']+=1
+    else:
+      pond_hockey_counts['no_weak'] += 1
+    if pond_hockey.loc[i][2] == 'warm':
+      pond_hockey_counts['no_warm']+=1
+    else:
+      pond_hockey_counts['no_cold'] += 1
+    if pond_hockey.loc[i][3] == 'smooth':
+      pond_hockey_counts['no_smooth']+=1
+    elif pond_hockey.loc[i][3] == 'rough':
+      pond_hockey_counts['no_rough'] += 1
+    else:
+      pond_hockey_counts['no_soft'] += 1
+    if pond_hockey.loc[i][4] == 'sunny':
+      pond_hockey_counts['no_sunny']+=1
+    elif pond_hockey.loc[i][4] == 'snowy':
+      pond_hockey_counts['no_snowy'] += 1
+    else:
+      pond_hockey_counts['no_cloudy'] += 1
+  i += 1
+
+
+
+```
+
+
+## Calculate probabilities
+
+once the instances and the attribute levels have been counted, the prior probabilities can be calculated. The probabilities are calculated in a series of for loops. It is in the second(interior) loop that the probability is calculated and the number of attribute levels is added to the denominator.  
+
+```{python}
+probabilities = dict() #empty dictionary to store probabilities
+
+for attr in attr_cat: #loop through the attributes
+  for cat in attr_cat[attr]: #loop through levels in each attribute
+    probabilities[attr+'_'+cat+'_yes'] = pond_hockey_counts['yes_'+cat]/(pond_hockey_counts['yes_counts']+len(attr_cat[attr])) #probability yes for attribute level
+    probabilities[attr+'_'+cat+'_no'] = pond_hockey_counts['no_'+cat]/(pond_hockey_counts['no_counts']+len(attr_cat[attr])) #probability no for attribute level
+
+probabilities['yes'] = pond_hockey_counts['yes_counts']/pond_hockey.shape[0] #probabilty of yes is yes instances divided by total instances
+probabilities['no'] = pond_hockey_counts['no_counts']/pond_hockey.shape[0] # probability of no is no instances divided by total instances
+
+print(probabilities['attr_1_strong_yes'])
+
+
+```
+
+The probability for $P(wind=strong|class = yes)$ is 0.333 which matches the hand calculation done above
+
+
+## Build the Classifier
+
+Once all of the prior probabilities have been calculated it means the program has been trained! Now it is time to start classify instances based on what the program has learned. A function is created to classify instances as it makes it convenient to feed new instances into the classifier. The function creates a new dictionary called calculations that holds the information needed to calculate the probabilities. Each attribute is read from the instance and the appropriate prior probability is added to the calculations dictionary. Once all of the appropriate prior probabilities are calculated the probabilities for each class are calculated and the instance is classified as yes or no.
+
+
+```{python}
+#classify instances
+
+
+def pond_hockey_day(instance):
+  calculations = dict()
+  if instance[0] == 'strong':
+    calculations['yes_attr1'] = probabilities['attr_1_strong_yes']
+    calculations['no_attr1'] = probabilities['attr_1_strong_no']
+  else:
+    calculations['yes_attr1'] = probabilities['attr_1_weak_yes']
+    calculations['no_attr1'] = probabilities['attr_1_weak_no']
+  if instance[1] == 'warm':
+    calculations['yes_attr2'] = probabilities['attr_2_warm_yes']
+    calculations['no_attr2'] = probabilities['attr_2_warm_no']
+  else:
+    calculations['yes_attr2'] = probabilities['attr_2_cold_yes']
+    calculations['no_attr2'] = probabilities['attr_2_cold_no']
+  if instance[2] == 'smooth':
+    calculations['yes_attr3'] = probabilities['attr_3_smooth_yes']
+    calculations['no_attr3'] = probabilities['attr_3_smooth_no']
+  elif instance[2] == 'rough':
+    calculations['yes_attr3'] = probabilities['attr_3_rough_yes']
+    calculations['no_attr3'] = probabilities['attr_3_rough_no']
+  else:
+    calculations['yes_attr3'] = probabilities['attr_3_soft_yes']
+    calculations['no_attr3'] = probabilities['attr_3_soft_no']
+  if instance[3] == 'sunny':
+    calculations['yes_attr4'] = probabilities['attr_4_sunny_yes']
+    calculations['no_attr4'] = probabilities['attr_4_sunny_no']
+  elif instance[3] == 'cloudy':
+    calculations['yes_attr4'] = probabilities['attr_4_cloudy_yes']
+    calculations['no_attr4'] = probabilities['attr_4_cloudy_no']
+  else:
+    calculations['yes_attr4'] = probabilities['attr_4_snowy_yes']
+    calculations['no_attr4'] = probabilities['attr_4_snowy_no']
+  
+  prob_yes = probabilities['yes']*calculations['yes_attr1']*calculations['yes_attr3']*calculations['yes_attr3']*calculations['yes_attr4']
+  prob_no = probabilities['no']*calculations['no_attr1']*calculations['no_attr3']*calculations['no_attr3']*calculations['no_attr4']    
+  
+  if prob_yes > prob_no:
+    print('yes to pond hockey')
+  else:
+    print('No to pond hockey')    
+```
+
+## Classify Instances
+
+To make sure the classifier is operating properly a couple of existing instances from the training data are classified to see if they are classified correctly.  The first instance should be yes and the second no. Next a new instance is classified to see which category the classifier puts it in.  
+
+```{python}
+pond_hockey_day(instance = ['strong', 'warm', 'smooth', 'sunny'])
+pond_hockey_day(instance = ['strong', 'cold', 'rough', 'snowy'])
+pond_hockey_day(instance = ['strong', 'warm', 'soft', 'cloudy'])
+
+```
+
+The classifier appears to be working correctly. That is how to construct a simple Naive Bayes classifier in python. There are of course pre programmed classifiers out there that are already working, such as the Naive Bayes classifier in scikitlearn. But it is important to know how those algorithms works prior to using a pre-programmed version.   
+
+## The End
+
+As mentioned, this a simple version of this algorithm and there are lot of steps that could be taken to make the program more robust and generalized for other types of data. The point of this post was a simple walk through and the code was meant to be a little simpler and more straight forward. This could be built into a couple more functions or a class architecture to increase it usability. Another topic to mention is that a lot of data sets have quite a few more attributes than 4 and more instances than 12. When there are a lot of attributes the probabilities for each class can get quite small, often outside of the range of what a computer program classifies as non-zero. Meaning that when all of the decimal number probabilities are multiplied together they end up creating a very small number that is often returned as 0. To combat this programmers use a logarithmic rule $log(a\cdot b)\:=\:log(a)\:+\:log(b)$ to calculate the probabilities. This way the numbers don't zero out and it is still possible to determine which probability is bigger. Remember the point is not necessarily to get a correct probability for which class the instance is in but simply determine which class probability is bigger and therefore more likely. 
+
+The Naive Bayes classifier is a straight forward and useful classifier that is a good introduction to machine learning techniques. As mentioned the program in this post is quite simple and there are plenty of modifications to make it more robust and usable in the real world. 
+
+
+
+
+**This post is based on lecture by Dr. Wolffe in CIS 678 at GVSU
+
+
+
+

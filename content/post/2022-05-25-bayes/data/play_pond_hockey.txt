@@ -1,0 +1,12 @@
+yes strong warm smooth sunny
+yes weak warm smooth sunny
+no strong cold rough snowy
+no strong cold soft snowy
+no weak cold rough cloudy
+yes weak cold smooth cloudy
+yes weak cold smooth snowy
+no strong warm soft sunny
+yes weak warm smooth snowy
+yes weak warm smooth snowy
+no strong cold rough snowy
+yes strong cold smooth sunny
