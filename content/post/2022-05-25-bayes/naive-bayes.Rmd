@@ -29,9 +29,9 @@ The example in this post will look at is classifying whether or not it is a good
 
 ## The Data
 
-It is best to start with looking at and understanding the data that is going to be used to teach the Naive Bayes classifier the probabilities. Below the data is loaded from a csv file into a panda data frame. The data consists of five columns. First the class column, then wind,  air temp, ice conditions, and sky. The columns are not labeled in this case, as this data exists only for this post.The class column has levels yes and no (yes or no it is a good day to play pond hockey), the wind column has levels strong and weak, the air temp column has levels warm and cold, ice conditions has levels smooth, rough, and soft, and the sky column has levels sunny, snowy, and cloudy. Each column represents different weather conditions to play pond hockey in.
+It is best to start with looking at and understanding the data that is going to be used to teach the Naive Bayes classifier the probabilities. Below the data is loaded from a csv file into a panda data frame. The data consists of five columns. First the class column, then wind,  air temp, ice conditions, and sky. The columns are not labeled in this case, as this data exists only for this post.The class column has levels yes and no (yes or no it is a good day to play pond hockey), the wind column has levels strong and weak, the air temp column has levels warm and cold, ice conditions has levels smooth, rough, and soft, and the sky column has levels sunny, snowy, and cloudy. Each column represents different weather conditions to play pond hockey in. I have hid the code to load in the data to not show my computers file path online.
 
-```{python}
+```{python, include = FALSE}
 # maybe hide this as well so as to not show file directory in blog
 import pandas as pd
 
